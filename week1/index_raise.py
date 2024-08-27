@@ -1,5 +1,13 @@
-# author : Quentin Tuffery
-# Student id : dvb366
+# COMP.CS.100
+# Creator: Quentin Tuffery
+# Student id number: dvb366
+
+def main():
+    print("Hello World!")
+    # If the program had some other tasks to perform
+    # the commands for them would be written here.
+if __name__ == "__main__":
+    main()
 
 amount_study_benefit = float(input("Enter the amount of the study benefits: "))
 amount_raised1 = amount_study_benefit * 1.0117
