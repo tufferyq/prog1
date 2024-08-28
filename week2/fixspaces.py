@@ -7,8 +7,8 @@ This program gives the multiplication table from 1 to 10 for the entered number.
 """
 
 def main():
-    PI = 3.14159265358979323846
-    print(f"The approximate value of pi is {PI:1.0f} or, if we want to get specific, {PI:5.4f}")
+    name = input("Tell us your name: ")
+    print(f"Hey {name}, the printout formatting is going well!")
 
 
 if __name__ == "__main__":
