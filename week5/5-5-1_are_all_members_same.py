@@ -11,7 +11,6 @@ def are_all_members_same(list):
     """
     index = 1
     result = True
-    #print(len(list))
 
     while index < len(list):
         result = list[0] == list[index]
