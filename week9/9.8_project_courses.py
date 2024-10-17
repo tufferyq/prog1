@@ -1,5 +1,7 @@
 """
 COMP.CS.100 Programming 1
+Project - Department, courses, credits
+Author: Quentin TUFFERY, id: dvb366
 """
 
 def read_file(filename):
@@ -24,7 +26,7 @@ def read_file(filename):
         try:
             department, course_name, credit_points = parts
         except ValueError:
-            print("Error in file!")  # Print error if the line format is incorrect
+            print("Error in file!")  # Print error if the format is incorrect
             return
 
         # If department is not in the dictionary, add it
@@ -164,13 +166,36 @@ def calculate_credits(data, department):
     print(f"Department {department} has to offer {credits} cr.")
 
 def main():
-    """
-    Main function to run the program. It prompts the user for commands
-    and processes them accordingly.
-    """
     filename = input("Enter file name: ")
     data = read_file(filename)
-
-    # Continue accepting commands until the user chooses to quit
     while data:
-        newline
+        newline()
+        print("[A]dd / [C]redits / [D]elete / [P]rint all / p[R]int department / "
+              "[Q]uit")
+        entered_command = input("Enter command: ")
+        command, department, course_name, credits = separate_command(entered_command)
+
+        if command == "a" and department and course_name and credits is not None:
+            add_course(data, department, course_name, credits)
+
+        elif command == "d" and department:
+            delete_course(data, department, course_name)
+
+        elif command == "c" and department:
+            calculate_credits(data, department)
+
+        elif command == "p":
+            print_all(data)
+
+        elif command == "r" and department:
+            print_department(data, department)
+
+        elif command == "q":
+            print("Ending program.")
+            break
+
+        else:
+            print("Invalid command!")
+            continue
+if __name__ == "__main__":
+    main()
