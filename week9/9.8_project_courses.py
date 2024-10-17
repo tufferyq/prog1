@@ -1,7 +1,7 @@
 """
 COMP.CS.100 Programming 1
 Project - Department, courses, credits
-Author: Quentin TUFFERY, id: dvb366
+Author: Quentin TUFFERY, id: dvb366, email: quentin.tuffery@tuni.fi
 """
 
 def read_file(filename):
