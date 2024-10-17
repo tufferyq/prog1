@@ -5,28 +5,24 @@ id: dvb366
 email: quentin.tuffery@tuni.fi
 """
 
-def get_valid_integer(prompt):
-    """
-    Demande à l'utilisateur de saisir un entier et vérifie qu'il est valide.
-    """
-    while True:
-        try:
-            return int(input(prompt))
-        except ValueError:
-            pass
 
 def main():
-    # Demander la largeur et la hauteur
-    width = get_valid_integer("Enter the width of a frame: ")
-    height = get_valid_integer("Enter the height of a frame: ")
+    filename = input("Enter the name of the file: ")
 
-    # Demander le caractère d'impression
-    print_mark = input("Enter a print mark: ")
-    print()
+    try:
+        file = open(filename, mode = 'r')
 
-    # Afficher le cadre
-    for _ in range(height):
-        print(width * print_mark)
+    except:
+        return
+
+    index = 1
+    for file_line in file:
+        file_line = file_line.rstrip()
+        print(f"{index} {file_line}")
+        index +=1
+
+    file.close()
+
 
 if __name__ == "__main__":
     main()

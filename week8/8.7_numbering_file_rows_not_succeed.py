@@ -12,7 +12,8 @@ def main():
     try:
         file = open(filename, mode = 'r')
 
-    except:
+    except FileNotFoundError:
+        print("There was an error in reading the file.")
         return
 
     index = 1

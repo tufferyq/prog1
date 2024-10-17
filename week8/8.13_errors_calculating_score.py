@@ -5,41 +5,44 @@ id: dvb366
 email: quentin.tuffery@tuni.fi
 """
 
-def read_message():
-    """
-    Saves the multiples rows of message into one list
-    :return list: list of strings, rows of messages given by the user
-    """
-    list = []
-    message = str(0)
-
-    while message != "":
-        message = input("")
-        if message != "":
-            list.append(str(message))
-
-    return list
-
 def main():
-    filename = input("Enter the name of the file: ")
-
+    # select & open file
+    filename = input("Enter the name of the score file: ")
+    scores = {}
     try:
-        write_file = open(filename, mode = 'w')
-
-        print("Enter rows of text. Quit by entering an empty row.")
-
-        text = read_message()
-
-        for index in range(len(text)):
-            print(f"{index+1} {text[index]}", file = write_file)
-
+        scores_file = open(filename, mode="r")
     except:
-        print(f"Writing the file {filename} was not successful.")
+        print("There was an error in reading the file.")
         return
 
-    print(f"File {filename} has been written.")
+    # convert text to a dictionary
+    for line in scores_file:
+        line = line.rstrip()
+        try:
+            name, score = line.split(" ")
+        except ValueError:
+            print(f"There was an erroneous line in the file:")
+            print(line)
+            return
 
-    write_file.close()
+        try:
+            score = int(score)
+        except ValueError:
+            print(f"There was an erroneous score in the file:")
+            print(score)
+            return
+
+        if name not in scores:
+            scores[name] = score
+        else:
+            scores[name] += score
+
+    # print result scores
+    print("Contestant score:")
+    for name in sorted(scores):
+        print(f"{name} {scores[name]}")
+
+    scores_file.close()
 
 
 if __name__ == "__main__":

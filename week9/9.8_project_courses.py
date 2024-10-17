@@ -1,46 +1,176 @@
 """
 COMP.CS.100 Programming 1
-Read genres and tv-series from a file into a dict.
-Print a list of the genres in alphabetical order
-and list tv-series by given genre on user's command.
 """
 
 def read_file(filename):
     """
-    Reads and saves the infos from the file in a dictionary
-    :param filename: name of the file that contains the data
-    :return dictionary: dictionary
+    Reads and saves the information from the file into a dictionary.
+    :param filename: string, name of the file that contains the data
+    :return: dictionary containing the department data with courses and credits
     """
-
     dictionary = {}
 
-    file = open(filename, mode="r")
-    next(file)
+    try:
+        # Attempt to open the file. If it fails, print an error and return None.
+        file = open(filename, mode="r")
+    except FileNotFoundError:
+        print("Error opening file!")
+        return
+
+    # Read the file line by line and process each line
     for line in file:
-        # If the input row was correct, it contained two parts:
-        # · the show name before semicolon (;) and
-        # · comma separated list of genres after the semicolon.
-        # If we know that a function (method split in this case)
-        # returns a list containing two elements, we can assign
-        # names for those elements as follows:
+        line = line.rstrip()  # Remove any trailing newline or whitespace
+        parts = line.split(";")  # Split the line by the delimiter ";"
+        try:
+            department, course_name, credit_points = parts
+        except ValueError:
+            print("Error in file!")  # Print error if the line format is incorrect
+            return
 
-        line = line.rstrip()
-        parts = line.split(";")
-        key, name, phone, email, skype = parts
+        # If department is not in the dictionary, add it
+        if department not in dictionary:
+            dictionary[department] = {}
 
-        key = {}
-        key["name"] = name
-        key["phone"] = phone
-        key["email"] = email
-        key["skype"] = skype
+        # Add the course and its credits to the department
+        dictionary[department][course_name] = credit_points
 
-        dictionary[parts[0]] = key
-
-    file.close()
+    file.close()  # Close the file after reading
     return dictionary
 
+def separate_command(entered_command):
+    """
+    Separates the command input into its components.
+    :param entered_command: string, raw input command from user
+    :return: tuple (command, department, course_name, credits)
+    """
+    parts = entered_command.split()  # Split the input into parts by spaces
+    command = parts[0].lower()  # Extract the command (always first part)
+
+    department = None
+    course_name = None
+    credits = None
+
+    if len(parts) > 1:
+        department = parts[1]  # Store department, if provided, in lowercase for consistency
+
+    if command == "d":
+        # For the delete command, everything after the department is treated as part of the course name
+        if len(parts) > 2:
+            course_name = " ".join(parts[2:])
+    elif command == "a":
+        # For add command, the last part should be parsed as credits, and the rest as the course name
+        if len(parts) > 3:
+            credits = parts[-1]
+            try:
+                credits = int(credits)  # Attempt to convert to an integer
+            except ValueError:
+                credits = None  # If conversion fails, set credits to None
+            course_name = " ".join(parts[2:-1])  # Join the parts to form the course name
+        elif len(parts) == 3:
+            course_name = parts[2]  # If only department and course name are given, store the course name
+
+    elif len(parts) == 3:
+        # For commands like "c" or "r" that don't involve a course name but require department
+        course_name = parts[2]
+
+    return command, department, course_name, credits
+
+def newline():
+    """
+    Creates a new, empty line for better readability in output.
+    """
+    print()
+
+def print_department(data, department_name):
+    """
+    Prints the courses and credits of the selected department.
+    :param department_name: string, name of the department to list courses for
+    :param data: dictionary containing the department data
+    """
+    try:
+        # Get the list of courses in the department, sorted by course name
+        keyslist = sorted(list(data[department_name].keys()))
+    except KeyError:
+        print('Department not found!')  # Print error if department does not exist
+        return
+
+    print(f"*{department_name}*")  # Print department name
+    for course_name in keyslist:
+        print(f"{course_name} : {data[department_name][course_name]} cr")  # Print each course and its credits
+
+def print_all(data):
+    """
+    Prints all departments and their courses.
+    :param data: dictionary containing the department data
+    """
+    keyslist = sorted(data.keys())  # Get a sorted list of all department names
+    for department in keyslist:
+        print_department(data, department)  # Print each department
+
+def add_course(data, department, course_name, credits):
+    """
+    Adds a course to a department, or creates the department if it does not exist.
+    :param data: dictionary, departments, courses and offered credits
+    :param department: string, name of the selected department
+    :param course_name: string, name of the course to add
+    :param credits: int, number of credits offered by the course to add
+    """
+    if department not in data:
+        data[department] = {}  # Create a new department if it does not exist
+        print(f"Added department {department} with course {course_name}")
+    else:
+        print(f"Added course {course_name} to department {department}")
+
+    data[department][course_name] = credits  # Add or update the course in the department
+
+def delete_course(data, department, course_name=None):
+    """
+    Deletes a course from a department, or the department entirely if no course is specified.
+    :param data: dictionary, departments, courses and offered credits
+    :param department: string, name of the selected department
+    :param course_name: string, name of the course to delete
+    """
+    if department not in data:
+        print(f"Department {department} not found!")  # Error if department does not exist
+        return
+
+    if course_name:
+        if course_name in data[department]:
+            del data[department][course_name]  # Delete the specified course
+            print(f"Department {department} course {course_name} removed.")
+            if not data[department]:
+                del data[department]  # Remove department if no courses are left
+        else:
+            print(f"Course {course_name} from {department} not found!")  # Error if course does not exist
+    else:
+        del data[department]  # Delete the whole department if no course name is specified
+        print(f"Department {department} removed.")
+
+def calculate_credits(data, department):
+    """
+    Prints the total amount of credits offered by all the courses of the selected department.
+    :param data: dictionary, departments, courses and offered credits
+    :param department: string, name of the selected department
+    """
+    credits = 0
+    try:
+        # Sum up all credits for the courses in the department
+        keyslist = sorted(list(data[department].keys()))
+    except KeyError:
+        print('Department not found!')  # Error if department does not exist
+        return
+    for course_name in keyslist:
+        credits += int(data[department][course_name])
+    print(f"Department {department} has to offer {credits} cr.")
 
 def main():
-    infos = read_file("/Users/qtuffery/prog1/week9/contacts.csv")
-if __name__ == "__main__":
-    main()
+    """
+    Main function to run the program. It prompts the user for commands
+    and processes them accordingly.
+    """
+    filename = input("Enter file name: ")
+    data = read_file(filename)
+
+    # Continue accepting commands until the user chooses to quit
+    while data:
+        newline

@@ -5,41 +5,37 @@ id: dvb366
 email: quentin.tuffery@tuni.fi
 """
 
-def read_message():
-    """
-    Saves the multiples rows of message into one list
-    :return list: list of strings, rows of messages given by the user
-    """
-    list = []
-    message = str(0)
-
-    while message != "":
-        message = input("")
-        if message != "":
-            list.append(str(message))
-
-    return list
+#def add_scores(dictionary):
+ #   """
+  #  this function adds scores to the dictionary.
+   # :param dictionary:
+   # """
+   # #adding scores inside
+   # name = input("enter name: ")
+    #score = input("enter score: ")
+    #dictionary[name] = score
+    #return dictionary
 
 def main():
-    filename = input("Enter the name of the file: ")
+    #select & open file
+    filename = input("Enter the name of the score file: ")
+    scores = {}
+    scores_file = open(filename, mode="r")
 
-    try:
-        write_file = open(filename, mode = 'w')
+    #add_scores(scores)
+    for line in scores_file:
+        line = line.rstrip()
+        name, score = line.split()
+        if name not in scores.keys():
+            scores[name] = int(score)
+        else: scores[name] += int(score)
 
-        print("Enter rows of text. Quit by entering an empty row.")
+    #print result scores
+    print("Contestant score:")
+    for name in sorted(scores):
+        print(f"{name} {scores[name]}")
 
-        text = read_message()
-
-        for index in range(len(text)):
-            print(f"{index+1} {text[index]}", file = write_file)
-
-    except:
-        print(f"Writing the file {filename} was not successful.")
-        return
-
-    print(f"File {filename} has been written.")
-
-    write_file.close()
+    scores_file.close()
 
 
 if __name__ == "__main__":

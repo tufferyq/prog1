@@ -5,24 +5,41 @@ id: dvb366
 email: quentin.tuffery@tuni.fi
 """
 
+def read_message():
+    """
+    Saves the multiples rows of message into one list
+    :return list: list of strings, rows of messages given by the user
+    """
+    list = []
+    message = str(0)
+
+    while message != "":
+        message = input("")
+        if message != "":
+            list.append(str(message))
+
+    return list
 
 def main():
     filename = input("Enter the name of the file: ")
 
     try:
-        file = open(filename, mode = 'r')
+        write_file = open(filename, mode = 'w')
 
-    except FileNotFoundError:
-        print("There was an error in reading the file.")
+        print("Enter rows of text. Quit by entering an empty row.")
+
+        text = read_message()
+
+        for index in range(len(text)):
+            print(f"{index+1} {text[index]}", file = write_file)
+
+    except:
+        print(f"Writing the file {filename} was not successful.")
         return
 
-    index = 1
-    for file_line in file:
-        file_line = file_line.rstrip()
-        print(f"{index} {file_line}")
-        index +=1
+    print(f"File {filename} has been written.")
 
-    file.close()
+    write_file.close()
 
 
 if __name__ == "__main__":

@@ -2,6 +2,6 @@ essi 5
 pietari 9
 essi 2
 pietari 10
-pietari 7
-aps 25
+pietari abc
+aps, 8
 essi 1
