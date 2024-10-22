@@ -1,21 +1,106 @@
 """
-COMP.CS.100 Ohjelmointi 1 / Programming 1
-Student Id: #######
-Name:       Xxxx Yyyyyy
-Email:      xxxx.yyyyyy@tuni.fi
+COMP.CS.100 Programming 1
+Student Id: dvb366
+Name: Quentin TUFFERY
+Email: quentin.tuffery@tuni.fi
 
-Program description goes here...
+This program manages moving boxes, allowing users to create boxes,
+add items, remove items, transfer items between boxes, show list of box's
+contents, search for items, and count items across all boxes.
 """
-
 
 class MovingBox:
     """
-    A class for keeping track of the contents of
-    a moving box. Items can be added to, removed from,
-    itemized (i.e. listed), and searched from a moving box.
-    The number of items in a box can also be queried
-    and items can be transferred between two boxes.
+    A class for keeping track of the contents of a moving box.
+    Items can be added to, removed from, itemized (i.e., listed),
+    and searched from a moving box. The number of items in a box
+    can also be queried and items can be transferred between two boxes.
     """
+
+    def __init__(self, name):
+        """
+        Initializes a new MovingBox instance.
+
+        :param name: string, the name of the moving box.
+        """
+        self.__name = name
+        self.__items = {}
+
+    def add_item(self, item_name, count):
+        """
+        Adds a specified number of items to the moving box.
+
+        :param item_name: string, the name of the item to add.
+        :param count: int, the number of items to add.
+        """
+        # Checking if the item is already in the dictionary.
+        # If yes, will add the count to the initial number.
+        # Otherwise, will create a new entry.
+        if item_name not in self.__items:
+            self.__items[item_name] = count
+        else:
+            self.__items[item_name] += count
+
+    def remove_item(self, item_name, count):
+        """
+        Removes a specified number of items from the moving box.
+
+        :param item_name: string, the name of the item to remove.
+        :param count: int, the number of items to remove.
+        :return: bool, True if removal was successful, False otherwise.
+        """
+        # Checking if the item is the dictionary.
+        # If yes, will remove the count to the initial number.
+        # Otherwise, will not do anything to avoid errors.
+        if item_name in self.__items:
+            if self.__items[item_name] >= count:
+                self.__items[item_name] -= count
+                return True
+        return False
+
+    def transfer_item(self, target_box, item_name, count):
+        """
+        Transfers a specified number of items from this box to another box.
+
+        :param target_box: object, the MovingBox instance to transfer items to.
+        :param item_name: string, The name of the item to transfer.
+        :param count: int, The number of items to transfer.
+        :return: bool, True if transfer was successful, False otherwise.
+        """
+        # Checking if the item is the dictionary before using the add and
+        # remove methods
+        if item_name in self.__items:
+            if self.__items[item_name] >= count:
+                self.remove_item(item_name, count)
+                target_box.add_item(item_name, count)
+                return True
+        return False
+
+    def list_content(self):
+        """
+        Lists the contents of the moving box along with the total item count.
+
+        Prints each item's name and quantity in ascending order.
+        """
+        print(f'Box "{self.__name}" contains {sum(self.__items.values())} '
+              f'items.')
+        for item in sorted(self.__items.keys()):
+            if self.__items[item] != 0:
+                print(f"{self.__items[item]:3.0f} {item}")
+
+    def search_item(self, item_name):
+        """
+        Searches for a specific item in the moving box.
+
+        :param item_name: string, the name of the item to search for.
+        :return: int, the quantity of the item if found; otherwise returns 0.
+        """
+        if item_name in self.__items:
+            if self.__items[item_name] > 0:
+                return self.__items[item_name]
+        return 0
+
+
 
     ##################################################################
     #                                                                #
